@@ -38,7 +38,15 @@ export default function Experience() {
               <div className="tl-item__card">
                 <h3>{e.title}</h3>
                 <p className="tl-item__org">{e.org}</p>
-                <p className="tl-item__desc">{e.desc}</p>
+                {Array.isArray(e.desc) ? (
+                  <ul className="tl-item__list">
+                    {e.desc.map((d, k) => (
+                      <li key={k}>{d}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="tl-item__desc">{e.desc}</p>
+                )}
                 <ul className="pcard__tags">
                   {e.tags.map((t) => (
                     <li key={t}>{t}</li>

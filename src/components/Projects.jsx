@@ -21,7 +21,7 @@ function useIsMobile(q = '(max-width: 900px)') {
 
 function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
   const ref = useRef(null);
-  const targetScale = 1 - (total - i - 1) * 0.045;
+  const targetScale = 1 - (total - i - 1) * 0.03;
   const scale = useTransform(progress, [i / total, 1], [1, targetScale]);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'start start'] });
   const visualScale = useTransform(scrollYProgress, [0, 1], [1.18, 1]);
@@ -34,7 +34,7 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
         style={{
           '--c': p.color,
           scale: mobile ? 1 : scale,
-          top: mobile ? 0 : `calc(-4vh + ${i * 28}px)`,
+          top: mobile ? 0 : `calc(-3vh + ${i * 18}px)`,
         }}
       >
         <motion.div className="pcard__dim" style={{ opacity: mobile ? 0 : dim }} />
@@ -49,9 +49,24 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
           </div>
           <h3 className="pcard__title">{p.title}</h3>
           <p className="pcard__subtitle">{p.subtitle}</p>
+          <div className="pcard__meta mono">
+            <span>◷ {p.period}</span>
+            <span>◆ {p.role}</span>
+            <span>◎ {p.team}</span>
+          </div>
           <p className="pcard__summary">{p.summary}</p>
+          {p.metrics && (
+            <div className="pcard__metrics">
+              {p.metrics.map((m) => (
+                <div key={m.l}>
+                  <strong>{m.v}</strong>
+                  <small>{m.l}</small>
+                </div>
+              ))}
+            </div>
+          )}
           <ul className="pcard__tags">
-            {p.stack.slice(0, 6).map((s) => (
+            {p.stack.slice(0, 5).map((s) => (
               <li key={s}>{s}</li>
             ))}
           </ul>
@@ -64,7 +79,6 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
                 </svg>
               </button>
             </Magnetic>
-            <span className="pcard__year mono">{p.year}</span>
           </div>
         </div>
         <div
@@ -77,7 +91,7 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
           onKeyDown={(e) => e.key === 'Enter' && onOpen(p)}
         >
           <motion.div className="pcard__visual-inner" style={{ scale: visualScale }}>
-            <ProjectVisual type={p.visual} />
+            <ProjectVisual p={p} />
           </motion.div>
         </div>
       </motion.article>
@@ -117,21 +131,29 @@ function ProjectModal({ p, onClose }) {
           </svg>
         </button>
         <div className="modal__visual">
-          <ProjectVisual type={p.visual} />
+          <ProjectVisual p={p} />
         </div>
         <div className="modal__content">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.7, ease }}>
-            <span className="pcard__cat mono">
-              {p.category} · {p.year}
-            </span>
+            <span className="pcard__cat mono">{p.category}</span>
             <h3 className="modal__title">{p.title}</h3>
             <p className="pcard__subtitle">{p.subtitle}</p>
             <p className="modal__summary">{p.summary}</p>
+            {p.metrics && (
+              <div className="pcard__metrics modal__metrics">
+                {p.metrics.map((m) => (
+                  <div key={m.l}>
+                    <strong>{m.v}</strong>
+                    <small>{m.l}</small>
+                  </div>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           <div className="modal__cols">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7, ease }}>
-              <h4 className="mono">Điểm nổi bật</h4>
+              <h4 className="mono">Điểm nổi bật & đóng góp</h4>
               <ul className="modal__list">
                 {p.highlights.map((h, k) => (
                   <motion.li key={k} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + k * 0.06 }}>
@@ -141,8 +163,12 @@ function ProjectModal({ p, onClose }) {
               </ul>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.7, ease }}>
-              <h4 className="mono">Vai trò</h4>
+              <h4 className="mono">Vị trí</h4>
               <p className="modal__role">{p.role}</p>
+              <h4 className="mono">Thời gian</h4>
+              <p className="modal__info">{p.period}</p>
+              <h4 className="mono">Quy mô</h4>
+              <p className="modal__info">{p.team}</p>
               <h4 className="mono">Công nghệ</h4>
               <ul className="pcard__tags">
                 {p.stack.map((s) => (
@@ -171,7 +197,7 @@ export default function Projects() {
           kicker="Dự án"
           title="Những sản phẩm"
           accent="tôi đã xây dựng"
-          desc="Từ hệ thống quản lý bệnh viện quy mô lớn đến ứng dụng di động — mỗi dự án là một bài toán thực tế với người dùng thật."
+          desc="7 dự án thực tế tại Healthcare Solution Vietnam — từ HIS doanh nghiệp, microservice báo cáo, backend Spring Boot đến web bệnh viện, sàn TMĐT và ứng dụng Flutter."
         />
       </div>
       <div ref={container} className="container projects__stack">

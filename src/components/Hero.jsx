@@ -53,10 +53,11 @@ const code = [
   [['k', 'const '], ['v', 'khanh'], ['p', ' = {']],
   [['p', '  '], ['a', 'role'], ['p', ': '], ['s', `"${profile.role}"`], ['p', ',']],
   [['p', '  '], ['a', 'company'], ['p', ': '], ['s', '"Healthcare Solution VN"'], ['p', ',']],
-  [['p', '  '], ['a', 'stack'], ['p', ': ['], ['s', '"React"'], ['p', ', '], ['s', '".NET"'], ['p', ', '], ['s', '"Node"'], ['p', '],']],
-  [['p', '  '], ['a', 'focus'], ['p', ': '], ['s', '"Hospital systems"'], ['p', ',']],
-  [['p', '  '], ['a', 'available'], ['p', ': '], ['k', 'true'], ['p', ',']],
-  [['p', '  '], ['a', 'coffee'], ['p', ': '], ['n', 'Infinity'], ['p', ',']],
+  [['p', '  '], ['a', 'experience'], ['p', ': '], ['s', '"1.5+ years"'], ['p', ',']],
+  [['p', '  '], ['a', 'frontend'], ['p', ': ['], ['s', '"React"'], ['p', ', '], ['s', '"AG Grid"'], ['p', '],']],
+  [['p', '  '], ['a', 'backend'], ['p', ': ['], ['s', '".NET"'], ['p', ', '], ['s', '"Spring"'], ['p', '],']],
+  [['p', '  '], ['a', 'database'], ['p', ': '], ['s', '"SQL Server"'], ['p', ',']],
+  [['p', '  '], ['a', 'teamLead'], ['p', ': '], ['k', 'true'], ['p', ',']],
   [['p', '};']],
 ];
 
@@ -135,7 +136,7 @@ function CodeCard({ ready }) {
           <span className="float-chip__icon">#</span> .NET
         </motion.div>
         <motion.div className="float-chip float-chip--c" animate={{ y: [0, -10, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
-          <span className="float-chip__icon">⬢</span> Node.js
+          <span className="float-chip__icon">☕</span> Spring Boot
         </motion.div>
       </motion.div>
     </motion.div>

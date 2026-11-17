@@ -32,18 +32,18 @@ function ScrubText({ text }) {
   );
 }
 
-function Counter({ value, suffix }) {
+function Counter({ value, suffix, decimals = 0 }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-15%' });
   const [n, setN] = useState(0);
   useEffect(() => {
     if (!inView) return undefined;
-    const c = animate(0, value, { duration: 2, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => setN(Math.round(v)) });
+    const c = animate(0, value, { duration: 2, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => setN(v) });
     return () => c.stop();
   }, [inView, value]);
   return (
     <span ref={ref} className="stat__value">
-      {n}
+      {n.toFixed(decimals)}
       <span className="gradient-text">{suffix}</span>
     </span>
   );
@@ -54,12 +54,22 @@ function Portrait() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const rotate = useTransform(scrollYProgress, [0, 1], [-8, 8]);
   const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const imgY = useTransform(scrollYProgress, [0, 1], [28, 6]);
   return (
     <motion.div ref={ref} className="portrait" style={{ y }}>
       <motion.div className="portrait__ring" style={{ rotate }} />
       <div className="portrait__inner">
-        {/* Thay bằng ảnh thật: đặt file vào public/avatar.jpg và đổi thành <img src="/avatar.jpg" alt="..." /> */}
-        <span className="portrait__initials gradient-text">{profile.initials}</span>
+        <span className="portrait__initials gradient-text" aria-hidden="true">
+          {profile.initials}
+        </span>
+        <motion.img
+          className="portrait__img"
+          src={profile.avatar}
+          alt={`Ảnh chân dung ${profile.name}`}
+          style={{ y: imgY }}
+          loading="lazy"
+          draggable="false"
+        />
         <div className="portrait__meta mono">
           <span>{profile.location}</span>
           <span className="portrait__live">
@@ -77,7 +87,7 @@ function Portrait() {
             <path id="circlePath" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
           </defs>
           <text>
-            <textPath href="#circlePath">FULL-STACK • HEALTHCARE • SOFTWARE •</textPath>
+            <textPath href="#circlePath">FULL-STACK • TEAM LEAD • HEALTHCARE •</textPath>
           </text>
         </svg>
         <span className="portrait__tag-core">✦</span>
@@ -98,7 +108,7 @@ export default function About() {
             <div className="stats">
               {stats.map((s, i) => (
                 <Reveal key={s.label} delay={i * 0.08} className="stat">
-                  <Counter value={s.value} suffix={s.suffix} />
+                  <Counter value={s.value} suffix={s.suffix} decimals={s.decimals} />
                   <span className="stat__label">{s.label}</span>
                 </Reveal>
               ))}

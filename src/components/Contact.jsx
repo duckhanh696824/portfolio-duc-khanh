@@ -9,6 +9,8 @@ const Icon = {
     <path d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.6.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 015 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.1 10.1 0 0022 12.2C22 6.6 17.5 2 12 2z" />
   ),
   mail: <path d="M3 6.5A1.5 1.5 0 014.5 5h15A1.5 1.5 0 0121 6.5v11a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 17.5v-11zm0 .5l9 6 9-6" />,
+  phone: <path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" />,
+  cv: <path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5zm0 0v5h5M12 11v6m-3-3l3 3 3-3" />,
   linkedin: <path d="M4 3a2 2 0 110 4 2 2 0 010-4zm-2 6h4v12H2V9zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9V21H9V9z" />,
   facebook: <path d="M14 8h3V4h-3c-2.8 0-4 1.7-4 4.3V10H7v4h3v8h4v-8h3l1-4h-4V8.6c0-.4.3-.6.6-.6z" />,
 };
@@ -33,6 +35,8 @@ export default function Contact() {
   const socials = [
     { key: 'github', href: profile.github, label: 'GitHub' },
     { key: 'mail', href: `mailto:${profile.email}`, label: 'Email' },
+    { key: 'phone', href: `tel:${profile.phone.replace(/\s/g, '')}`, label: profile.phone },
+    { key: 'cv', href: profile.cv, label: 'Tải CV' },
     { key: 'linkedin', href: profile.linkedin, label: 'LinkedIn' },
     { key: 'facebook', href: profile.facebook, label: 'Facebook' },
   ].filter((s) => s.href);
@@ -80,16 +84,27 @@ export default function Contact() {
         </Reveal>
 
         <Reveal delay={0.4} className="socials">
-          {socials.map((s) => (
-            <Magnetic key={s.key} strength={0.4}>
-              <a href={s.href} target={s.key === 'mail' ? undefined : '_blank'} rel="noreferrer" className="social" aria-label={s.label}>
-                <svg viewBox="0 0 24 24" width="20" height="20" fill={s.key === 'mail' ? 'none' : 'currentColor'} stroke={s.key === 'mail' ? 'currentColor' : 'none'} strokeWidth="1.7">
-                  {Icon[s.key]}
-                </svg>
-                <span>{s.label}</span>
-              </a>
-            </Magnetic>
-          ))}
+          {socials.map((s) => {
+            const stroke = ['mail', 'phone', 'cv'].includes(s.key);
+            const external = ['github', 'linkedin', 'facebook'].includes(s.key);
+            return (
+              <Magnetic key={s.key} strength={0.4}>
+                <a
+                  href={s.href}
+                  target={external ? '_blank' : undefined}
+                  rel="noreferrer"
+                  download={s.key === 'cv' ? '' : undefined}
+                  className="social"
+                  aria-label={s.label}
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill={stroke ? 'none' : 'currentColor'} stroke={stroke ? 'currentColor' : 'none'} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                    {Icon[s.key]}
+                  </svg>
+                  <span>{s.label}</span>
+                </a>
+              </Magnetic>
+            );
+          })}
         </Reveal>
       </div>
     </section>
