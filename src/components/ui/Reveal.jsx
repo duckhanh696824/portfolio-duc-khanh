@@ -26,7 +26,7 @@ export function SplitWords({ text, className = '', delay = 0, stagger = 0.06, an
     ? { initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-10%' } }
     : { initial: 'hidden', animate: animate ? 'show' : 'hidden' };
   return (
-    <motion.span className={`split ${className}`} {...props} transition={{ staggerChildren: stagger, delayChildren: delay }}>
+    <motion.span key={text} className={`split ${className}`} {...props} transition={{ staggerChildren: stagger, delayChildren: delay }}>
       {words.map((w, i) => (
         <span className="split__mask" key={i}>
           <motion.span

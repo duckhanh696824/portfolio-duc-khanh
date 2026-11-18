@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
-import { projects } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { startScroll, stopScroll } from '../lib/lenis.js';
 import ProjectVisual from './ProjectVisual.jsx';
 import { SectionHeading } from './ui/Reveal.jsx';
@@ -20,6 +20,7 @@ function useIsMobile(q = '(max-width: 900px)') {
 }
 
 function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
+  const { t } = useLang();
   const ref = useRef(null);
   const targetScale = 1 - (total - i - 1) * 0.03;
   const scale = useTransform(progress, [i / total, 1], [1, targetScale]);
@@ -73,7 +74,7 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
           <div className="pcard__actions">
             <Magnetic strength={0.3}>
               <button className="btn btn--color" onClick={() => onOpen(p)}>
-                Xem chi tiết
+                {t.work.details}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
@@ -85,7 +86,7 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
           className="pcard__visual"
           onClick={() => onOpen(p)}
           data-cursor="view"
-          data-cursor-label="Chi tiết"
+          data-cursor-label={t.work.cursor}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === 'Enter' && onOpen(p)}
@@ -100,6 +101,7 @@ function ProjectCard({ p, i, total, progress, onOpen, mobile }) {
 }
 
 function ProjectModal({ p, onClose }) {
+  const { t } = useLang();
   useEffect(() => {
     stopScroll();
     const onKey = (e) => e.key === 'Escape' && onClose();
@@ -125,7 +127,7 @@ function ProjectModal({ p, onClose }) {
         aria-modal="true"
         aria-label={p.title}
       >
-        <button className="modal__close" onClick={onClose} aria-label="Đóng">
+        <button className="modal__close" onClick={onClose} aria-label={t.work.close}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M6 6l12 12M18 6L6 18" />
           </svg>
@@ -153,7 +155,7 @@ function ProjectModal({ p, onClose }) {
 
           <div className="modal__cols">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7, ease }}>
-              <h4 className="mono">Điểm nổi bật & đóng góp</h4>
+              <h4 className="mono">{t.work.highlights}</h4>
               <ul className="modal__list">
                 {p.highlights.map((h, k) => (
                   <motion.li key={k} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + k * 0.06 }}>
@@ -163,13 +165,13 @@ function ProjectModal({ p, onClose }) {
               </ul>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.7, ease }}>
-              <h4 className="mono">Vị trí</h4>
+              <h4 className="mono">{t.work.role}</h4>
               <p className="modal__role">{p.role}</p>
-              <h4 className="mono">Thời gian</h4>
+              <h4 className="mono">{t.work.period}</h4>
               <p className="modal__info">{p.period}</p>
-              <h4 className="mono">Quy mô</h4>
+              <h4 className="mono">{t.work.team}</h4>
               <p className="modal__info">{p.team}</p>
-              <h4 className="mono">Công nghệ</h4>
+              <h4 className="mono">{t.work.stack}</h4>
               <ul className="pcard__tags">
                 {p.stack.map((s) => (
                   <li key={s}>{s}</li>
@@ -184,9 +186,12 @@ function ProjectModal({ p, onClose }) {
 }
 
 export default function Projects() {
+  const { projects, t } = useLang();
   const container = useRef(null);
   const mobile = useIsMobile();
   const [open, setOpen] = useState(null);
+  const openProject = projects.find((p) => p.id === open);
+  const closeModal = useCallback(() => setOpen(null), []);
   const { scrollYProgress } = useScroll({ target: container, offset: ['start start', 'end end'] });
 
   return (
@@ -194,19 +199,19 @@ export default function Projects() {
       <div className="container">
         <SectionHeading
           index="03"
-          kicker="Dự án"
-          title="Những sản phẩm"
-          accent="tôi đã xây dựng"
-          desc="7 dự án thực tế tại Healthcare Solution Vietnam — từ HIS doanh nghiệp, microservice báo cáo, backend Spring Boot đến web bệnh viện, sàn TMĐT và ứng dụng Flutter."
+          kicker={t.work.kicker}
+          title={t.work.title}
+          accent={t.work.accent}
+          desc={t.work.desc}
         />
       </div>
       <div ref={container} className="container projects__stack">
         {projects.map((p, i) => (
-          <ProjectCard key={p.id} p={p} i={i} total={projects.length} progress={scrollYProgress} onOpen={setOpen} mobile={mobile} />
+          <ProjectCard key={p.id} p={p} i={i} total={projects.length} progress={scrollYProgress} onOpen={(proj) => setOpen(proj.id)} mobile={mobile} />
         ))}
       </div>
 
-      <AnimatePresence>{open && <ProjectModal key={open.id} p={open} onClose={() => setOpen(null)} />}</AnimatePresence>
+      <AnimatePresence>{openProject && <ProjectModal key={openProject.id} p={openProject} onClose={closeModal} />}</AnimatePresence>
     </section>
   );
 }

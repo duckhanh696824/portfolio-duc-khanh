@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { skills } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { SectionHeading } from './ui/Reveal.jsx';
 
 const icons = {
@@ -58,15 +58,16 @@ function SkillCard({ s, i }) {
 }
 
 export default function Skills() {
+  const { skills, t } = useLang();
   return (
     <section id="skills" className="section skills">
       <div className="container">
         <SectionHeading
           index="02"
-          kicker="Kỹ năng"
-          title="Bộ công cụ"
-          accent="của tôi"
-          desc="Những công nghệ tôi sử dụng hằng ngày để xây dựng hệ thống y tế doanh nghiệp và ứng dụng web — từ database đến giao diện."
+          kicker={t.skills.kicker}
+          title={t.skills.title}
+          accent={t.skills.accent}
+          desc={t.skills.desc}
         />
         <div className="bento">
           {skills.map((s, i) => (

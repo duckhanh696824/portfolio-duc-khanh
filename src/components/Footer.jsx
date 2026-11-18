@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { profile } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { scrollToTarget } from '../lib/lenis.js';
 
 function Clock() {
+  const { lang } = useLang();
   const [t, setT] = useState('');
   useEffect(() => {
     const fmt = () =>
-      new Intl.DateTimeFormat('vi-VN', {
+      new Intl.DateTimeFormat(lang === 'vi' ? 'vi-VN' : 'en-GB', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
@@ -15,22 +16,23 @@ function Clock() {
     setT(fmt());
     const iv = setInterval(() => setT(fmt()), 1000);
     return () => clearInterval(iv);
-  }, []);
+  }, [lang]);
   return <span>{t} · GMT+7</span>;
 }
 
 export default function Footer() {
+  const { profile, t } = useLang();
   return (
     <footer className="footer">
       <div className="container footer__inner">
         <span>
-          © {new Date().getFullYear()} {profile.name}. Thiết kế & phát triển với ♥
+          © {new Date().getFullYear()} {profile.name}. {t.footer.made}
         </span>
         <span className="mono footer__clock">
-          <span className="status-dot" /> TP.HCM — <Clock />
+          <span className="status-dot" /> {t.footer.city} — <Clock />
         </span>
         <button className="footer__top mono" onClick={() => scrollToTarget(0)}>
-          Lên đầu trang ↑
+          {t.footer.top}
         </button>
       </div>
       <div className="footer__big" aria-hidden="true">

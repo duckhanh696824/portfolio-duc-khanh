@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { motion, animate } from 'framer-motion';
-import { profile } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 
 const ease = [0.76, 0, 0.24, 1];
-const words = ['Design', 'Code', 'Deploy', profile.name];
 
 export default function Preloader({ onDone }) {
+  const { profile, t } = useLang();
+  const words = ['Design', 'Code', 'Deploy', profile.name];
   const [count, setCount] = useState(0);
   const [wordIdx, setWordIdx] = useState(0);
 
@@ -45,7 +46,7 @@ export default function Preloader({ onDone }) {
       </div>
 
       <div className="preloader__bottom">
-        <span className="mono preloader__label">Đang tải portfolio</span>
+        <span className="mono preloader__label">{t.loading}</span>
         <span className="preloader__count">
           {String(count).padStart(3, '0')}
           <small>%</small>

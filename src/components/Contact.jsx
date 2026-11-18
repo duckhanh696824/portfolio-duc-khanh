@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
-import { profile } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { Reveal, SplitWords } from './ui/Reveal.jsx';
 import Magnetic from './ui/Magnetic.jsx';
 
@@ -16,6 +16,7 @@ const Icon = {
 };
 
 export default function Contact() {
+  const { profile, t } = useLang();
   const [copied, setCopied] = useState(false);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
@@ -36,7 +37,7 @@ export default function Contact() {
     { key: 'github', href: profile.github, label: 'GitHub' },
     { key: 'mail', href: `mailto:${profile.email}`, label: 'Email' },
     { key: 'phone', href: `tel:${profile.phone.replace(/\s/g, '')}`, label: profile.phone },
-    { key: 'cv', href: profile.cv, label: 'Tải CV' },
+    { key: 'cv', href: profile.cv, label: t.contact.cv },
     { key: 'linkedin', href: profile.linkedin, label: 'LinkedIn' },
     { key: 'facebook', href: profile.facebook, label: 'Facebook' },
   ].filter((s) => s.href);
@@ -48,22 +49,22 @@ export default function Contact() {
         <Reveal className="section-heading__kicker contact__kicker">
           <span className="mono">05</span>
           <span className="section-heading__line" />
-          <span>Liên hệ</span>
+          <span>{t.contact.kicker}</span>
         </Reveal>
 
         <h2 className="contact__title">
-          <SplitWords text="Cùng nhau tạo nên" />
+          <SplitWords text={t.contact.line1} />
           <br />
-          <SplitWords text="điều tuyệt vời." className="gradient-text" delay={0.2} />
+          <SplitWords text={t.contact.line2} className="gradient-text" delay={0.2} />
         </h2>
 
         <Reveal delay={0.2} className="contact__desc">
-          Bạn có ý tưởng, dự án hay cơ hội hợp tác? Hộp thư của tôi luôn mở — tôi sẽ phản hồi sớm nhất có thể.
+          {t.contact.desc}
         </Reveal>
 
         <Reveal delay={0.3} className="contact__mail-wrap">
           <Magnetic strength={0.2}>
-            <a href={`mailto:${profile.email}`} className="contact__mail" data-cursor="view" data-cursor-label="Gửi mail">
+            <a href={`mailto:${profile.email}`} className="contact__mail" data-cursor="view" data-cursor-label={t.contact.sendMail}>
               {profile.email}
               <span className="contact__mail-line" />
             </a>
@@ -71,13 +72,13 @@ export default function Contact() {
           <button className="btn btn--ghost btn--sm contact__copy" onClick={copy}>
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
-                key={copied ? 'ok' : 'copy'}
+                key={(copied ? 'ok' : 'copy') + t.contact.copy}
                 initial={{ y: 12, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -12, opacity: 0 }}
                 transition={{ duration: 0.25 }}
               >
-                {copied ? '✓ Đã sao chép' : 'Sao chép email'}
+                {copied ? t.contact.copied : t.contact.copy}
               </motion.span>
             </AnimatePresence>
           </button>

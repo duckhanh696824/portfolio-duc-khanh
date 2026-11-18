@@ -1,12 +1,37 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion';
-import { navLinks, profile } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { scrollToTarget } from '../lib/lenis.js';
 import Magnetic from './ui/Magnetic.jsx';
 
 const ease = [0.22, 1, 0.36, 1];
 
+/** Công tắc chuyển ngôn ngữ VI ⇄ EN */
+function LangSwitch() {
+  const { lang, setLang, switching, t } = useLang();
+  const current = switching || lang;
+  return (
+    <div className="lang-switch" role="group" aria-label={t.langSwitch}>
+      {['vi', 'en'].map((code) => (
+        <button
+          key={code}
+          type="button"
+          className={current === code ? 'is-active' : ''}
+          aria-pressed={current === code}
+          onClick={() => setLang(code)}
+        >
+          {current === code && (
+            <motion.span layoutId="lang-pill" className="lang-switch__pill" transition={{ type: 'spring', stiffness: 420, damping: 32 }} />
+          )}
+          <span className="lang-switch__label">{code === 'vi' ? 'VI' : 'EN'}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function Navbar({ ready }) {
+  const { navLinks, profile, t } = useLang();
   const [active, setActive] = useState('');
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -51,7 +76,7 @@ export default function Navbar({ ready }) {
         animate={ready ? { y: hidden ? -110 : 0, opacity: 1 } : { y: -100, opacity: 0 }}
         transition={{ duration: 0.7, ease, delay: ready && !scrolled ? 0.9 : 0 }}
       >
-        <a href="#top" className="nav__logo" onClick={go('top')} aria-label="Về đầu trang">
+        <a href="#top" className="nav__logo" onClick={go('top')} aria-label={t.toTop}>
           <span className="nav__logo-mark">{profile.initials}</span>
           <span className="nav__logo-text">
             {profile.shortName}
@@ -59,7 +84,7 @@ export default function Navbar({ ready }) {
           </span>
         </a>
 
-        <nav className="nav__links" aria-label="Điều hướng chính">
+        <nav className="nav__links" aria-label={t.navAria}>
           {navLinks.map((l) => (
             <a key={l.id} href={`#${l.id}`} onClick={go(l.id)} className={active === l.id ? 'is-active' : ''}>
               {active === l.id && (
@@ -71,12 +96,10 @@ export default function Navbar({ ready }) {
         </nav>
 
         <div className="nav__right">
-          <Magnetic strength={0.25}>
-            <a href="#contact" onClick={go('contact')} className="btn btn--sm btn--primary nav__cta">
-              <span className="status-dot" /> Sẵn sàng hợp tác
-            </a>
+          <Magnetic strength={0.2}>
+            <LangSwitch />
           </Magnetic>
-          <button className={`nav__burger ${open ? 'is-open' : ''}`} onClick={() => setOpen((o) => !o)} aria-label="Mở menu">
+          <button className={`nav__burger ${open ? 'is-open' : ''}`} onClick={() => setOpen((o) => !o)} aria-label={t.openMenu}>
             <span />
             <span />
           </button>

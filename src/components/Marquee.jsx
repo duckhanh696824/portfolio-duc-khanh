@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useVelocity, useSpring, useMotionValue, useAnimationFrame } from 'framer-motion';
 import { useRef } from 'react';
-import { marquee } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 
 const wrap = (min, max, v) => {
   const r = max - min;
@@ -42,9 +42,10 @@ function Row({ items, baseVelocity = -2, outline = false }) {
 }
 
 export default function Marquee() {
+  const { marquee, t } = useLang();
   const half = Math.ceil(marquee.length / 2);
   return (
-    <section className="marquee" aria-label="Công nghệ">
+    <section className="marquee" aria-label={t.tech}>
       <Row items={marquee.slice(0, half)} baseVelocity={-2.2} />
       <Row items={marquee.slice(half)} baseVelocity={2.2} outline />
     </section>

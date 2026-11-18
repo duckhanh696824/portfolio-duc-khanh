@@ -1,11 +1,12 @@
 import { useRef } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { experience } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { SectionHeading } from './ui/Reveal.jsx';
 
 const ease = [0.22, 1, 0.36, 1];
 
 export default function Experience() {
+  const { experience, t } = useLang();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.7', 'end 0.6'] });
   const scaleY = useSpring(scrollYProgress, { stiffness: 100, damping: 25 });
@@ -13,7 +14,7 @@ export default function Experience() {
   return (
     <section id="experience" className="section experience">
       <div className="container">
-        <SectionHeading index="04" kicker="Hành trình" title="Kinh nghiệm" accent="& học vấn" />
+        <SectionHeading index="04" kicker={t.exp.kicker} title={t.exp.title} accent={t.exp.accent} />
         <div ref={ref} className="timeline">
           <div className="timeline__track">
             <motion.div className="timeline__fill" style={{ scaleY }} />

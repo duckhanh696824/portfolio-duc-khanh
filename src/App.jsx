@@ -12,6 +12,7 @@ import Projects from './components/Projects.jsx';
 import Experience from './components/Experience.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
+import LangOverlay from './components/LangOverlay.jsx';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -38,6 +39,7 @@ export default function App() {
       <AnimatePresence mode="wait">
         {loading && <Preloader key="preloader" onDone={handleDone} />}
       </AnimatePresence>
+      <LangOverlay />
 
       <Cursor />
       <div className="noise" aria-hidden="true" />

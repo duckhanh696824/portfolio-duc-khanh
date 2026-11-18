@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
-import { profile } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { scrollToTarget } from '../lib/lenis.js';
 import ParticleField from './ParticleField.jsx';
 import Magnetic from './ui/Magnetic.jsx';
@@ -27,11 +27,12 @@ function Letters({ text, start, ready, className = '' }) {
 }
 
 function RotatingRole() {
+  const { profile } = useLang();
   const [i, setI] = useState(0);
   useEffect(() => {
     const iv = setInterval(() => setI((v) => (v + 1) % profile.rotatingRoles.length), 2600);
     return () => clearInterval(iv);
-  }, []);
+  }, [profile.rotatingRoles.length]);
   return (
     <span className="hero__role">
       <AnimatePresence mode="wait">
@@ -51,7 +52,7 @@ function RotatingRole() {
 
 const code = [
   [['k', 'const '], ['v', 'khanh'], ['p', ' = {']],
-  [['p', '  '], ['a', 'role'], ['p', ': '], ['s', `"${profile.role}"`], ['p', ',']],
+  [['p', '  '], ['a', 'role'], ['p', ': '], ['s', '"Full-stack Developer"'], ['p', ',']],
   [['p', '  '], ['a', 'company'], ['p', ': '], ['s', '"Healthcare Solution VN"'], ['p', ',']],
   [['p', '  '], ['a', 'experience'], ['p', ': '], ['s', '"1.5+ years"'], ['p', ',']],
   [['p', '  '], ['a', 'frontend'], ['p', ': ['], ['s', '"React"'], ['p', ', '], ['s', '"AG Grid"'], ['p', '],']],
@@ -144,6 +145,7 @@ function CodeCard({ ready }) {
 }
 
 export default function Hero({ ready }) {
+  const { profile, t, lang } = useLang();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 180]);
@@ -184,10 +186,10 @@ export default function Hero({ ready }) {
             animate={ready ? { opacity: 1 } : {}}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            <span className="gradient-text">{'//'}</span> Xin chào, tôi là
+            <span className="gradient-text">{'//'}</span> {t.hello}
           </motion.p>
 
-          <h1 className="hero__title">
+          <h1 className="hero__title" key={lang}>
             <Letters text={firstLine} start={0.35} ready={ready} />
             <Letters text={lastLine} start={0.65} ready={ready} className="hero__line--accent" />
           </h1>
@@ -226,7 +228,7 @@ export default function Hero({ ready }) {
                   scrollToTarget('#work');
                 }}
               >
-                Xem dự án
+                {t.viewWork}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M7 17L17 7M17 7H8M17 7v9" />
                 </svg>
@@ -241,7 +243,7 @@ export default function Hero({ ready }) {
                   scrollToTarget('#contact');
                 }}
               >
-                Liên hệ với tôi
+                {t.contactMe}
               </a>
             </Magnetic>
           </motion.div>
@@ -256,12 +258,12 @@ export default function Hero({ ready }) {
         initial={{ opacity: 0 }}
         animate={ready ? { opacity: 1 } : {}}
         transition={{ delay: 1.8 }}
-        aria-label="Cuộn xuống"
+        aria-label={t.scrollDown}
       >
         <span className="scroll-cue__mouse">
           <motion.span animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }} transition={{ duration: 1.8, repeat: Infinity }} />
         </span>
-        <span className="mono">Cuộn xuống</span>
+        <span className="mono">{t.scrollDown}</span>
       </motion.button>
     </section>
   );

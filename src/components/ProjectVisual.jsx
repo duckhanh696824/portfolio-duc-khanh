@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useLang } from '../i18n/LangContext.jsx';
 
 const ease = [0.22, 1, 0.36, 1];
 const inView = { initial: 'hidden', whileInView: 'show', viewport: { once: false, margin: '-15%' } };
@@ -24,13 +25,14 @@ function Browser({ url, children }) {
 /* HIS — LIS dashboard với lưới dữ liệu kiểu AG Grid */
 function Dashboard({ p }) {
   const bars = [40, 65, 52, 80, 58, 92, 70, 85, 62, 96];
-  const tabs = ['Tiếp nhận', 'Kết quả', 'Duyệt', 'Máy XN'];
+  const { t } = useLang();
+  const tabs = t.mock.tabs;
   const rows = [
-    ['260712000123', 'Glucose', 'ok'],
-    ['260712000124', 'HbA1c', 'wait'],
-    ['260712000125', 'Công thức máu', 'info'],
-    ['260712000126', 'Creatinine', 'ok'],
-    ['260712000127', 'AST / ALT', 'wait'],
+    ['260712000123', t.mock.tests[0], 'ok'],
+    ['260712000124', t.mock.tests[1], 'wait'],
+    ['260712000125', t.mock.tests[2], 'info'],
+    ['260712000126', t.mock.tests[3], 'ok'],
+    ['260712000127', t.mock.tests[4], 'wait'],
   ];
   return (
     <Browser url={p.url}>
@@ -151,7 +153,8 @@ function Api({ p }) {
 
 /* Website bệnh viện — đặt lịch khám 4 bước */
 function Website({ p }) {
-  const steps = ['Chuyên khoa', 'Bác sĩ', 'Khung giờ', 'Xác nhận'];
+  const { t } = useLang();
+  const steps = t.mock.steps;
   return (
     <Browser url={p.url}>
       <div className="mk-site">
@@ -171,7 +174,7 @@ function Website({ p }) {
             <em />
           </div>
           <motion.div className="mk-booking" {...inView} variants={fadeUp(0.3, 30)}>
-            <strong>Đặt lịch khám</strong>
+            <strong>{t.mock.booking}</strong>
             <div className="mk-steps">
               {steps.map((s, i) => (
                 <motion.div key={s} {...inView} variants={{ hidden: { opacity: 0.2 }, show: { opacity: 1, transition: { delay: 0.6 + i * 0.25 } } }}>
@@ -197,7 +200,8 @@ function Website({ p }) {
 
 /* Trang quản trị nội dung (CMS) */
 function Cms({ p }) {
-  const menu = ['Dashboard', 'Chuyên khoa', 'Phòng khám', 'Bác sĩ', 'Dịch vụ y tế', 'Gói khám', 'BHYT', 'Tin tức'];
+  const { t } = useLang();
+  const menu = t.mock.cmsMenu;
   return (
     <Browser url={p.url}>
       <div className="mk-cms">
@@ -211,10 +215,10 @@ function Cms({ p }) {
         </aside>
         <div className="mk-cms__main">
           <div className="mk-cms__head">
-            <strong>Chuyên khoa</strong>
-            <em>+ Thêm mới</em>
+            <strong>{t.mock.cmsTitle}</strong>
+            <em>{t.mock.cmsAdd}</em>
           </div>
-          {['Nội tổng quát', 'Châm cứu', 'Phục hồi chức năng', 'Y học cổ truyền', 'Nhi khoa'].map((n, r) => (
+          {t.mock.cmsRows.map((n, r) => (
             <motion.div key={n} className="mk-cms__row" {...inView} variants={{ hidden: { opacity: 0, x: -14 }, show: { opacity: 1, x: 0, transition: { delay: 0.3 + r * 0.07 } } }}>
               <span className="mk-cms__thumb" />
               <span className="mk-cms__name">{n}</span>
@@ -223,7 +227,7 @@ function Cms({ p }) {
             </motion.div>
           ))}
           <motion.div className="mk-cms__toast" {...inView} variants={fadeUp(1, 10)}>
-            ✓ Cập nhật thành công
+            {t.mock.cmsToast}
           </motion.div>
         </div>
       </div>
@@ -233,20 +237,14 @@ function Cms({ p }) {
 
 /* Sàn TMĐT */
 function Shop({ p }) {
-  const prods = [
-    ['Serum dưỡng da', '289.000đ'],
-    ['Kem chống nắng', '199.000đ'],
-    ['Sữa rửa mặt', '149.000đ'],
-    ['Mặt nạ ngủ', '239.000đ'],
-    ['Toner hoa hồng', '179.000đ'],
-    ['Son dưỡng', '99.000đ'],
-  ];
+  const { t } = useLang();
+  const prods = t.mock.products;
   return (
     <Browser url={p.url}>
       <div className="mk-shop">
         <div className="mk-shop__top">
           <b className="mk-logo" />
-          <span className="mk-shop__search mono">Tìm sản phẩm…</span>
+          <span className="mk-shop__search mono">{t.mock.search}</span>
           <motion.span className="mk-shop__cart" {...inView} variants={{ hidden: { scale: 0.6 }, show: { scale: 1, transition: { delay: 1.2, type: 'spring', stiffness: 400, damping: 10 } } }}>
             🛒<em>3</em>
           </motion.span>
@@ -262,7 +260,7 @@ function Shop({ p }) {
           ))}
         </div>
         <motion.div className="mk-otp" {...inView} variants={fadeUp(0.9, 20)}>
-          <small>Mã OTP</small>
+          <small>{t.mock.otp}</small>
           <div>
             {['4', '8', '1', '6', '2', '9'].map((d, i) => (
               <span key={i}>{d}</span>
@@ -276,6 +274,7 @@ function Shop({ p }) {
 
 /* Ứng dụng mobile */
 function Mobile() {
+  const { t } = useLang();
   return (
     <div className="mk-mobile">
       {[0, 1].map((ph) => (
@@ -313,7 +312,7 @@ function Mobile() {
                     <span key={i} />
                   ))}
                 </div>
-                <div className="phone__pay">Thanh toán</div>
+                <div className="phone__pay">{t.mock.pay}</div>
               </>
             )}
             <div className="phone__tab">

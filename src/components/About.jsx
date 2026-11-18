@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate, motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { profile, stats } from '../data.js';
+import { useLang } from '../i18n/LangContext.jsx';
 import { Reveal, SectionHeading } from './ui/Reveal.jsx';
 
 function Word({ children, progress, range }) {
@@ -50,6 +50,7 @@ function Counter({ value, suffix, decimals = 0 }) {
 }
 
 function Portrait() {
+  const { profile, t } = useLang();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
   const rotate = useTransform(scrollYProgress, [0, 1], [-8, 8]);
@@ -65,7 +66,7 @@ function Portrait() {
         <motion.img
           className="portrait__img"
           src={profile.avatar}
-          alt={`Ảnh chân dung ${profile.name}`}
+          alt={`${t.portraitAlt} ${profile.name}`}
           style={{ y: imgY }}
           loading="lazy"
           draggable="false"
@@ -97,14 +98,15 @@ function Portrait() {
 }
 
 export default function About() {
+  const { profile, stats, t, lang } = useLang();
   return (
     <section id="about" className="section about">
       <div className="container">
-        <SectionHeading index="01" kicker="Giới thiệu" title="Đôi điều" accent="về tôi" />
+        <SectionHeading index="01" kicker={t.about.kicker} title={t.about.title} accent={t.about.accent} />
         <div className="about__grid">
           <Portrait />
           <div className="about__text">
-            <ScrubText text={profile.about} />
+            <ScrubText key={lang} text={profile.about} />
             <div className="stats">
               {stats.map((s, i) => (
                 <Reveal key={s.label} delay={i * 0.08} className="stat">
